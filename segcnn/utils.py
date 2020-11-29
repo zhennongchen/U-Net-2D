@@ -15,11 +15,14 @@ from scipy.ndimage.measurements import center_of_mass
 # Internal
 import dvpy as dv
 import segcnn
+import os
 
 cg = segcnn.Experiment()
 fs = segcnn.FileSystem(cg.base_dir, cg.data_dir,cg.hyper_dir)
 
-def in_adapt(x, target = cg.dim):
+adapt_size = (int(os.environ['CG_CROP_X']), int(os.environ['CG_CROP_Y']), int(os.environ['CG_CROP_Z']))
+
+def in_adapt(x, target = adapt_size):
   x = nb.load(x).get_data()
   x = dv.crop_or_pad(x, target)
   x = np.expand_dims(x, axis = -1)
@@ -33,7 +36,7 @@ def relabel(x):
     return x
 
 
-def out_adapt_raw(x, relabel_LVOT, target = cg.dim, n = cg.num_classes):
+def out_adapt_raw(x, relabel_LVOT, target = adapt_size, n = cg.num_classes):
     x = nb.load(x).get_data()
     if relabel_LVOT == True:
         x = relabel(x)
@@ -45,7 +48,7 @@ def out_adapt_raw(x, relabel_LVOT, target = cg.dim, n = cg.num_classes):
     x = dv.crop_or_pad(x, target)
     return x
 
-def out_adapt(x,relabel_LVOT, target = cg.dim, n = cg.num_classes):
+def out_adapt(x,relabel_LVOT, target = adapt_size, n = cg.num_classes):
   return dv.one_hot(out_adapt_raw(x, relabel_LVOT, target), n)
 
 def get_list_of_array_indices(dimension):

@@ -27,9 +27,11 @@ class Experiment():
   
     # Number of partitions in the crossvalidation.
     self.num_partitions = int(os.environ['CG_NUM_PARTITIONS'])
-  
+
     # Dimension of padded input, for training.
-    self.dim = (int(os.environ['CG_CROP_X']), int(os.environ['CG_CROP_Y']), int(os.environ['CG_CROP_Z']))
+    self.dim = (int(os.environ['CG_CROP_X']), int(os.environ['CG_CROP_Y']))
+
+    self.unetdim = len(self.dim)
   
     # Seed for randomization.
     self.seed = int(os.environ['CG_SEED'])
@@ -60,6 +62,7 @@ class Experiment():
                       2**(self.ii-3),2**(self.ii-4),2**(self.ii-4)]
     #self.conv_depth = [16, 32, 64, 128, 256, 256, 128, 64, 32, 16, 16]
     self.conv_depth = [self.conv_depth_multiplier*x for x in self.conv_depth]
+    print(self.conv_depth)
   
     assert(len(self.conv_depth) == (2*self.unet_depth+1))
   
