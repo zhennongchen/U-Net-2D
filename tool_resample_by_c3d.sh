@@ -10,7 +10,7 @@ minus=1
 # Get a list of patients.
 patients=(/Data/McVeighLabSuper/projects/Zhennong/AI/AI_datasets/*/*)
 save_folder="/Data/McVeighLabSuper/projects/Zhennong/AI/CNN/all-classes-all-phases-0.625/"
-img_or_seg=0 # 1 is image, 0 is seg
+img_or_seg=1 # 1 is image, 0 is seg
 
 if ((${img_or_seg} == 1))
 then
@@ -46,12 +46,16 @@ do
 
   echo ${o_dir}
   mkdir -p ${o_dir}
-  
-  IMGS=(${p}/${img_folder}/*.nii.gz)
+
+  # read the es.txt file
+  es_file=$(<${p}/es.txt)
+
+  IMGS=(${p}/${img_folder}/0.nii.gz)
+  IMGS+=(${p}/${img_folder}/${es_file}.nii.gz)
+
 
   for i in $(seq 0 $(( ${#IMGS[*]} - 1 )));
   do
-  #echo ${IMGS[${i}]}
     i_file=${IMGS[${i}]}
     echo ${i_file}
     o_file=${o_dir}/$(basename ${i_file})

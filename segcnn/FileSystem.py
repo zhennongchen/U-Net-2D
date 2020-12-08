@@ -6,7 +6,7 @@ import os
 
 # Internal
 
-ALLOWED_IMAGE_LISTS={'ALL_SEGS', 'ALL_IMGS', 'ED_ES','ED_ES2','ALL_SEGS2','ED_ES_F','ED_ES_U','ED_ES_U2'} 
+ALLOWED_IMAGE_LISTS={'ALL_SEGS', 'ALL_IMGS', 'ED_ES','ED_ES2','ALL_SEGS2','ED_ES_adapted','ED_ES_U','ED_ES_U2'} 
 
 class FileSystem:
     def __init__(self,
@@ -19,8 +19,6 @@ class FileSystem:
         self.local_directory = _local_directory
         
 
-    
-    
     def model_suffix(self, batch):
         """ Get the model suffix. """
         return 'batch_{}'.format(batch)
@@ -46,13 +44,13 @@ class FileSystem:
         assert(list_type in ALLOWED_IMAGE_LISTS)
         n = 'img_list_{}.npy'.format(batch)
         
-        return n if not path else os.path.join(self.local_directory, list_type, n)
+        return n if not path else os.path.join(self.data_directory, list_type, n)
         
     def seg_list(self, batch, list_type, path = True):
         """ """
         assert(list_type in ALLOWED_IMAGE_LISTS)
         n = 'seg_list_{}.npy'.format(batch)
-        return n if not path else os.path.join(self.local_directory, list_type, n)
+        return n if not path else os.path.join(self.data_directory, list_type, n)
     
     
         

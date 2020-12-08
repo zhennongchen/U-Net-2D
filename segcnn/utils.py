@@ -18,7 +18,7 @@ import segcnn
 import os
 
 cg = segcnn.Experiment()
-fs = segcnn.FileSystem(cg.base_dir, cg.data_dir,cg.hyper_dir)
+fs = segcnn.FileSystem(cg.base_dir, cg.data_dir,cg.local_dir)
 
 adapt_size = (int(os.environ['CG_CROP_X']), int(os.environ['CG_CROP_Y']), int(os.environ['CG_CROP_Z']))
 

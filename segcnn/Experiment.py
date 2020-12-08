@@ -16,20 +16,19 @@ class Experiment():
     # data saved in the octomore local
     self.local_dir = os.environ['CG_LOCAL_DIR']
 
-    # folder that saves our data
-    self.code_dir = os.environ['CG_CODE_DIR']
-
-    # folder to save hyperparameter tuning assesment result
-    self.hyper_dir = os.environ['CG_HYPERTUNE_DIR']
-
     # folder of FC's NAS drive
     self.fc_dir = os.environ['CG_FCNAS_DIR']
   
     # Number of partitions in the crossvalidation.
     self.num_partitions = int(os.environ['CG_NUM_PARTITIONS'])
 
+    # define whether we are going to use pre-adapted image
+    self.adapted_already = int(os.environ['CG_ADAPTED_ALREADY'])
+    
     # Dimension of padded input, for training.
     self.dim = (int(os.environ['CG_CROP_X']), int(os.environ['CG_CROP_Y']))
+    #self.dim = (int(os.environ['CG_CROP_X']), int(os.environ['CG_CROP_Y']),int(os.environ['CG_CROP_Z']))
+    self.slice_num = int(os.environ['CG_CROP_Z'])
 
     self.unetdim = len(self.dim)
   
@@ -68,6 +67,9 @@ class Experiment():
   
     # How many images should be processed in each batch?
     self.batch_size = int(os.environ['CG_BATCH_SIZE'])
+
+    # How many cases should be read in each batch?
+    self.patients_in_one_batch = int(os.environ['CG_PATIENTS_IN_ONE_BATCH'])
   
     # Translation Range
     self.xy_range = float(os.environ['CG_XY_RANGE'])
@@ -91,8 +93,8 @@ class Experiment():
     self.lr_epochs = int(os.environ['CG_LR_EPOCHS'])
 
     # Input directory names
-    self.img_dir = os.path.normpath('img-nii-sm/')
-    self.seg_dir = os.path.normpath('seg-nii-sm/')  
+    self.img_dir = os.path.normpath('img-nii-0.625-adapted/')
+    self.seg_dir = os.path.normpath('seg-nii-0.625-adapted/')  
     
     self.matrix_dir=os.path.normpath('matrix/')
   
