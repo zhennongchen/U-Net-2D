@@ -33,7 +33,6 @@ import dvpy.tf_2d
 import segcnn
 
 cg = segcnn.Experiment()
-fs = segcnn.FileSystem(cg.base_dir, cg.data_dir,cg.local_dir)
 
 K.set_image_dim_ordering('tf')  # Tensorflow dimension ordering in this code
 
@@ -47,19 +46,20 @@ def train(batch):
     print('BATCH_SIZE = ',cg.batch_size)
     
     # define test_set
-    test_set = '2D1'
+    test_set = 'VR_1tf_4class'
 
     # define partition file
-    partition_file_name = 'ED_ES_adapted'
+    partition_file_name = 'one_time_frame_4classes'
 
     # define hdf5 file save folder
+    print(cg.fc_dir)
     weight_file_save_folder = os.path.join(cg.fc_dir,'models')
 
     #===========================================
     dv.section_print('Calculating Image Lists...')
 
-    imgs_list_trn=[np.load(fs.img_list(p, partition_file_name)) for p in range(cg.num_partitions)]
-    segs_list_trn=[np.load(fs.seg_list(p, partition_file_name)) for p in range(cg.num_partitions)]
+    imgs_list_trn=[np.load(os.path.join(cg.partition_dir,partition_file_name,'img_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
+    segs_list_trn=[np.load(os.path.join(cg.partition_dir,partition_file_name,'seg_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
    
 
     imgs_list_tst = imgs_list_trn.pop(batch)
@@ -70,7 +70,7 @@ def train(batch):
     segs_list_trn = np.concatenate(segs_list_trn)
 
     len_list=[len(imgs_list_trn),len(segs_list_trn),len(imgs_list_tst),len(segs_list_tst)]
-    print(len_list)
+    print(len_list,segs_list_trn[0])
 
     #===========================================
     dv.section_print('Creating and compiling model...')
@@ -105,7 +105,7 @@ def train(batch):
       model_name = 'model-'+test_set+'_batch'+str(batch)+'_s'
       model_fld = 'model_batch'+str(batch)
     filename = model_name +'-{epoch:03d}-{loss:.3f}-{val_loss:.3f}-{val_acc:.4f}.hdf5'
-    filepath=os.path.join(weight_file_save_folder,model_fld,'2D-UNet',filename)   
+    filepath=os.path.join(weight_file_save_folder,model_fld,'2D-UNet-seg',filename)   
     os.makedirs(os.path.dirname(filepath), exist_ok = True)  
   
     # set callbacks

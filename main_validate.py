@@ -63,11 +63,12 @@ def predict(batch):
     imgs_list_tst=[np.load(os.path.join(cg.partition_dir,partition_file_name,'img_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
     segs_list_tst=[np.load(os.path.join(cg.partition_dir,partition_file_name,'seg_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
     
-    if batch is None:
-      raise ValueError('No batch was provided: wrong!')
-      #batch = 'all'
-      #imgs_list_tst = np.concatenate(imgs_list_tst)
-      #segs_list_tst = np.concatenate(segs_list_tst)
+    if batch == 10:
+      #raise ValueError('No batch was provided: wrong!')
+      print('pick all batches')
+      batch = 'all'
+      imgs_list_tst = np.concatenate(imgs_list_tst)
+      segs_list_tst = np.concatenate(segs_list_tst)
     else:
       imgs_list_tst = imgs_list_tst[batch]
       segs_list_tst = segs_list_tst[batch]
@@ -144,9 +145,6 @@ def predict(batch):
    
 
       
-    
-
-      
       
 if __name__ == '__main__':
 
@@ -154,7 +152,7 @@ if __name__ == '__main__':
   parser.add_argument('--batch', type=int)
   args = parser.parse_args()
 
-  if args.batch is not None:
-    assert(0 <= args.batch < cg.num_partitions)
+  #if args.batch is not 'all':
+  #  assert(0 <= args.batch < cg.num_partitions)
 
   predict(args.batch)
