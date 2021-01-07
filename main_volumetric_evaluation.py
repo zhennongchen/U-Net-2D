@@ -17,9 +17,9 @@ def read_nib(file):
     return img,data,shape
 
 pred_seg_file = 'pred_s_'
-excel_filename = 'UNet_VR_1tf_2class_segmentation_volumetric_evaluation.xlsx'
+excel_filename = 'UNet_VR_1tf_4class_segmentation_volumetric_evaluation.xlsx'
 structure_list = [('LV',1),('LA',2),('LAA',3),('LVOT',4),('Aorta',5),('PV',6)] #(chamber,value in the seg)
-structure_choice = [0]
+structure_choice = [0,1,3]
 
 column_list = ['Patient_class','Patient_ID','batch']
 
@@ -40,7 +40,7 @@ for p in patient_list:
   t = int(f.read())
 
   # make sure the prediction segmentation exists
-  if os.path.exists(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-LV',pred_seg_file + str(t)+'.nii.gz')) != 1 or os.path.exists(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch',pred_seg_file+str(t)+'.nii.gz')) != 1:
+  if os.path.exists(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-4classes',pred_seg_file + str(t)+'.nii.gz')) != 1 or os.path.exists(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch',pred_seg_file+str(t)+'.nii.gz')) != 1:
     #print('no prediction or ground truth segmentation in this patient')
     continue
   
@@ -51,7 +51,7 @@ for p in patient_list:
   seg_t,data_t,_ = read_nib(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch',pred_seg_file+str(t)+'.nii.gz'))
     
   # predicted segmentation
-  seg_p,data_p,_ = read_nib(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-LV',pred_seg_file+str(t)+'.nii.gz'))
+  seg_p,data_p,_ = read_nib(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-4classes',pred_seg_file+str(t)+'.nii.gz'))
 
 
   for choice in structure_choice:
@@ -91,6 +91,7 @@ for p in patient_list:
   
   count = count + 1
   result.append(patient_result_list)
+
 
   
 # save into dataframe

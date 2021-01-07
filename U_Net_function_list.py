@@ -245,11 +245,11 @@ def find_timeframe(file,num_of_dots,signal = '/'):
         return int(kk[0])
 
 # function: sort files based on their time frames
-def sort_timeframe(files,num_of_dots):
+def sort_timeframe(files,num_of_dots,signal = '/'):
     time=[]
     time_s=[]
     for i in files:
-        a = find_timeframe(i,num_of_dots)
+        a = find_timeframe(i,num_of_dots,signal)
         time.append(a)
         time_s.append(a)
     time_s.sort()

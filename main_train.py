@@ -46,10 +46,10 @@ def train(batch):
     print('BATCH_SIZE = ',cg.batch_size)
     
     # define test_set
-    test_set = 'VR_1tf_4class'
+    test_set = 'lead_1tf_4class'
 
     # define partition file
-    partition_file_name = 'one_time_frame_4classes'
+    partition_file_name = 'one_time_frame_4classes_lead_cases'
 
     # define hdf5 file save folder
     print(cg.fc_dir)
@@ -155,7 +155,7 @@ def train(batch):
       segs_list_tst,
       slice_num = cg.slice_num,
       batch_size = cg.batch_size,
-      patients_in_one_batch = cg.patients_in_one_batch,
+      patients_in_one_batch = 1,#cg.patients_in_one_batch,
       relabel_LVOT = cg.relabel_LVOT,
       shuffle = True,
       input_adapter = ut.in_adapt,

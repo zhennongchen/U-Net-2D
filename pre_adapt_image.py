@@ -23,31 +23,31 @@ for p in patient_list:
     if t[-1] =='\n':
         t = t[0:len(t)-1]
 
-    print(patient_class,patient_id,t)
+    print(patient_class,patient_id)
   
 
-    # # adapt input image - CT volume
-    # save_folder = os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625-adapted')
-    # ff.make_folder([save_folder])
-    # img_list = ff.find_all_target_files([t+'.nii.gz'],os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625'))
-    # for i in img_list:
-    #     #time = ff.find_timeframe(i,2)
-    #     x = ut.in_adapt(i)
-    #     print(x.shape)
-    #     if cg.normalize == 1:
-    #         print('normalize is done')
-    #         x = ut.normalize_image(x)
-    #     np.save(os.path.join(save_folder,str(t)+'.npy'),x)
+    # adapt input image - CT volume
+    save_folder = os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625-adapted')
+    ff.make_folder([save_folder])
+    img_list = ff.find_all_target_files(['*.nii.gz'],os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625'))
+    for i in img_list:
+        time = ff.find_timeframe(i,2)
+        x = ut.in_adapt(i)
+        if cg.normalize == 1:
+            print('normalize is done')
+            x = ut.normalize_image(x)
+        np.save(os.path.join(save_folder,str(time)+'.npy'),x)
+    break
     
     # adapt output image - CT segmentation
-    save_folder = os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-nii-1.5-upsample-retouch-adapted-LV')
-    ff.make_folder([save_folder])
-    seg_list = ff.find_all_target_files(['pred_s_'+ t +'.nii.gz'],os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch'))
-    for s in seg_list:
-        #time = ff.find_timeframe(s,2)
-        y = ut.out_adapt(s,cg.relabel_LVOT)
-        print(y.shape)
-        np.save(os.path.join(save_folder,'pred_s_'+str(t)+'.npy'),y)
+    # save_folder = os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-nii-1.5-upsample-retouch-adapted-LV')
+    # ff.make_folder([save_folder])
+    # seg_list = ff.find_all_target_files(['pred_s_'+ t +'.nii.gz'],os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch'))
+    # for s in seg_list:
+    #     #time = ff.find_timeframe(s,2)
+    #     y = ut.out_adapt(s,cg.relabel_LVOT)
+    #     print(y.shape)
+    #     np.save(os.path.join(save_folder,'pred_s_'+str(t)+'.npy'),y)
 
 
 

@@ -33,11 +33,11 @@ cg = segcnn.Experiment()
 
 ###########
 Batch = '0'
-epoch = '078'
+epoch = '052'
 view = '2C'
 vector = ''
 suffix = '' #sometime we have r2 or t3.
-test_set = 'VR_1tf_2class'
+test_set = 'lead_1tf_4class'
 print(view,vector,Batch)
 
 model_folder = os.path.join(cg.fc_dir,'models','model_batch'+Batch,'2D-UNet-seg')
@@ -58,7 +58,7 @@ def predict(batch):
     #===========================================
     dv.section_print('Calculating Image Lists...')
 
-    partition_file_name = 'one_time_frame_LV'
+    partition_file_name = 'one_time_frame_4classes_lead_cases'
 
     imgs_list_tst=[np.load(os.path.join(cg.partition_dir,partition_file_name,'img_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
     segs_list_tst=[np.load(os.path.join(cg.partition_dir,partition_file_name,'seg_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
@@ -137,9 +137,10 @@ def predict(batch):
       u_pred = dv.crop_or_pad(u_pred, u_gt_nii.get_fdata().shape)
       u_pred[u_pred == 3] = 4  # particular for LVOT
       u_pred = nb.Nifti1Image(u_pred, u_gt_nii.affine)
-      save_file = os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-LV',seg_filename + str(time) + '.nii.gz')
+      save_file = os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-4classes',seg_filename + str(time) + '.nii.gz')
       os.makedirs(os.path.dirname(save_file), exist_ok = True)
       nb.save(u_pred, save_file)
+     
 
       
    
