@@ -6,14 +6,14 @@ clear all;
 addpath(genpath('/Users/zhennongchen/Documents/GitHub/Volume_Rendering_by_DL/matlab/'));
 %% List all patients
 main_path = '/Volumes/Seagate MacOS/';
-image_path = [main_path,'AI_plane_validation_study/Segs/Normal/'];
+image_path = [main_path,'AI_plane_validation_study/Segs/Abnormal/'];
 patient_list = Find_all_folders(image_path);
 %% Do pixel clearning:
 c = 0;
 % Global_disconnect_cases = [];
 % LA_disconnect_cases = [];
 % LVOT_disconnect_cases = [];
-for i = 1:size(patient_list,1)
+for i = 107
     patient_name = patient_list(i).name;
     disp(patient_name)
     patient_folder = [image_path,patient_name,'/seg-pred/'];
@@ -30,7 +30,7 @@ for i = 1:size(patient_list,1)
        LA_disconnect = 0;
        LVOT_disconnect = 0;
        
-       for j = 1: size(nii_list,1)
+       for j = 1%: size(nii_list,1)
            file_name = [patient_folder,convertStringsToChars(nii_list(j))];
            data = load_nii(file_name);
            image = data.img;
@@ -38,12 +38,12 @@ for i = 1:size(patient_list,1)
            % exclude
            % First step: Get rid of any disconnected object
            BW = image > 0;
-           [BW,image,change] = Find_largest_connected_component_3d(BW,image,0,6);
+           [BW,image,change] = Find_largest_connected_component_3d(BW,image,0);
            if change == 1
                Global_disconnect = 1;
            end
            % check
-           CC = bwconncomp(BW,6);
+           CC = bwconncomp(BW);
            numPixels = cellfun(@numel,CC.PixelIdxList);
            if size(numPixels,2) > 1
                error('Error occurred in exclusion');
@@ -54,19 +54,19 @@ for i = 1:size(patient_list,1)
            % label = 1
            % (LA = 2, LVOT = 4)
            BW = image == 2;
-           [BW,image,change] = Find_largest_connected_component_3d(BW,image,1,26);
+           [BW,image,change] = Find_largest_connected_component_3d(BW,image,1);
            if change == 1
                LA_disconnect = 1;
            end
            BW = image == 4;
-           [BW,image,change] = Find_largest_connected_component_3d(BW,image,1,26);
+           [BW,image,change] = Find_largest_connected_component_3d(BW,image,1);
            if change == 1
                LVOT_disconnect = 1;
            end
            
            % Third step: Get rid of disconnected object with label = 1
            BW = image == 1;
-           [BW,image,~] = Find_largest_connected_component_3d(BW,image,0,26);
+           [BW,image,~] = Find_largest_connected_component_3d(BW,image,0);
            
            % put back to segmentation
            [image] = Transform_between_nii_and_mat_coordinate(image,1);
@@ -78,7 +78,7 @@ for i = 1:size(patient_list,1)
     else
         disp('Do NOT have seg-pred folder') 
     end          
-end
+    end
 
         
     
