@@ -55,7 +55,7 @@ export CG_SEG_DATA_DIR="${CG_MAIN_DATA_DIR}predicted_seg/"
 export CG_SPREADSHEET_DIR="${CG_MAIN_DATA_DIR}spreadsheets/"
 export CG_PARTITION_DIR="${CG_MAIN_DATA_DIR}partition/"
 export CG_OCTOMORE_DIR="/Data/local_storage/Zhennong/VR_Data_0.625/"
-export CG_FCNAS_DIR="/Data/ContijochLab/workspaces/zhennong/AI_plane_validation_study/Planes/"
+export CG_FCNAS_DIR="/Data/ContijochLab/workspaces/zhennong/Volume_Rendering/"
 
 
 

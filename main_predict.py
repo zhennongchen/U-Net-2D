@@ -34,12 +34,12 @@ cg = segcnn.Experiment()
 
 
 ###########
-Batch = '1'
+Batch = '0'
 epoch = '080'
 view = '2C'
 vector = ''
 suffix = '' #sometime we have r2 or t3.
-test_set = 'lead_1tf_4class'
+test_set = 'VR_1tf_4class'
 print(view,vector,Batch)
 
 model_folder = os.path.join(cg.fc_dir,'models','model_batch'+Batch,'2D-UNet-seg')
@@ -82,18 +82,18 @@ valgen = dv.tf_2d.ImageDataGenerator(
 #===========================================
 dv.section_print('Get patient list...')
 #patient_list = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Final_patient_list_include.csv'))
-patient_list1 = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Lead_patient_list.csv'))
-print(len(patient_list1))
-patient_list = []
-for p in patient_list1:
-  batch = ff.locate_batch_num_for_patient(p[0],p[1],os.path.join(cg.partition_dir,'partitions_lead_cases_local_adapted.npy'))
-  if batch == 1:
-    patient_list.append(p)
-print(patient_list)
+#patient_list1 = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Lead_patient_list.csv'))
+#print(len(patient_list))
+# patient_list = []
+# for p in patient_list:
+#   batch = ff.locate_batch_num_for_patient(p[0],p[1],os.path.join(cg.partition_dir,'partitions_lead_cases_local_adapted.npy'))
+#   if batch == 1:
+#     patient_list.append(p)
+# print(patient_list)
 #===========================================
 dv.section_print('Prediction...')
 count = 0
-for p in [['Abnormal','CVC1905311311']]:
+for p in [['Abnormal','CVC1904011730'],['Abnormal','CVC1904230903'],['Abnormal','CVC1905311311'],['Abnormal','CVC1906281017'],['Abnormal','CVC1907101438'],['Abnormal','CVC1910160900'],['Abnormal','CVC2001161056'],['Abnormal','CVC2006010933'],['Abnormal','CVC2006230931']]:
   patient_class = p[0]
   patient_id = p[1]
   print(patient_class,patient_id)
@@ -102,12 +102,16 @@ for p in [['Abnormal','CVC1905311311']]:
   l = ff.sort_timeframe(ff.find_all_target_files(['img-nii-0.625/*.nii.gz'],os.path.join(cg.image_data_dir,patient_class,patient_id)),2)
   time_frame_list = np.arange(0,ff.find_timeframe(l[-1],2)+1)
   
-  
-  f = open(os.path.join(cg.seg_data_dir,patient_class,patient_id,'time_frame_picked_for_pretrained_AI.txt'),"r")
-  t_picked = int(f.read())
-  print(time_frame_list, ' picked: ', t_picked)
+  if os.path.isfile(os.path.join(cg.seg_data_dir,patient_class,patient_id,'time_frame_picked_for_pretrained_AI.txt')) == 1:
+    f = open(os.path.join(cg.seg_data_dir,patient_class,patient_id,'time_frame_picked_for_pretrained_AI.txt'),"r")
+    t_picked = int(f.read())
+    print(time_frame_list, ' picked: ', t_picked)
+    pre_picked = 1
+  else:
+    print('did not pick time frame in the training')
+    pre_picked = 0
 
-  ff.make_folder([os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-lead')])
+  ff.make_folder([os.path.join(cg.seg_data_dir,patient_class,patient_id)])
 
   for t in time_frame_list:
     img = os.path.join(cg.local_dir,patient_class,patient_id,'img-nii-0.625',str(t)+'.nii.gz')
@@ -131,14 +135,13 @@ for p in [['Abnormal','CVC1905311311']]:
       steps = 1,)
 
       # save u_net segmentation
-      u_gt_nii = nb.load(os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch','pred_s_'+str(t_picked)+'.nii.gz'))
+      u_gt_nii = nb.load(os.path.join(cg.local_dir,patient_class,patient_id,'img-nii-0.625',str(t)+'.nii.gz'))
       u_pred = np.rollaxis(u_pred, 0, 3)
       u_pred = np.argmax(u_pred , axis = -1).astype(np.uint8)
       u_pred = dv.crop_or_pad(u_pred, u_gt_nii.get_fdata().shape)
       u_pred[u_pred == 3] = 4  # particular for LVOT
       u_pred = nb.Nifti1Image(u_pred, u_gt_nii.affine)
-      save_file = os.path.join(cg.main_data_dir,'predicted_seg_lead',patient_class,patient_id,'seg-pred-lead',seg_filename + str(t) + '.nii.gz')
-      ff.make_folder([os.path.join(cg.main_data_dir,'predicted_seg_lead'),os.path.join(cg.main_data_dir,'predicted_seg_lead',patient_class),os.path.join(cg.main_data_dir,'predicted_seg_lead',patient_class,patient_id)])
+      save_file = os.path.join(cg.main_data_dir,'predicted_seg',patient_class,patient_id,'seg-pred-0.625-4classes',seg_filename + str(t) + '.nii.gz')
       os.makedirs(os.path.dirname(save_file), exist_ok = True)
       nb.save(u_pred, save_file)
     else: # have manual segmentation, only need to copy

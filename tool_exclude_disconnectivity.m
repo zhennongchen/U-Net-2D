@@ -6,7 +6,7 @@ clear all;
 addpath(genpath('/Users/zhennongchen/Documents/GitHub/Volume_Rendering_by_DL/matlab/'));
 %% List all patients
 main_path = '/Volumes/Seagate MacOS/';
-image_path = [main_path,'AI_plane_validation_study/Segs/Normal/'];
+image_path = [main_path,'AI_plane_validation_study/Segs/Abnormal/'];
 patient_list = Find_all_folders(image_path);
 %% Do pixel clearning:
 c = 0;
