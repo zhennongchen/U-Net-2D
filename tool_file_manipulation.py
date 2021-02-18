@@ -63,11 +63,7 @@ cg = segcnn.Experiment()
     #txt_file = os.path.join(cg.seg_data_dir,patient_class,patient_id,'time_frame_picked_for_pretrained_AI.txt')
     #shutil.copy(txt_file,os.path.join(cg.local_dir,patient_class,patient_id,'time_frame_picked_for_pretrained_AI.txt'))
 
-# file transfer from octomore
-folder = ff.find_all_target_files(['VR_Data_Resample_MPR'],'/Data/local_storage/Zhennong/')
-print(folder)
-for f in folder:
-    shutil.copytree(f,os.path.join(cg.main_data_dir,'Resample_MPR'))
+
 
 # compress
 # patient_list = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Final_patient_list_include.csv'))
