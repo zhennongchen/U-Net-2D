@@ -1,6 +1,6 @@
 ## parameters
 # define GPU you use
-export CUDA_VISIBLE_DEVICES="1"
+export CUDA_VISIBLE_DEVICES="0"
 
 # pixel size, for high resolution, set it to be 0.625, low res = 1.5
 export CG_SPACING=0.625
@@ -9,7 +9,7 @@ export CG_SPACING=0.625
 # use tool_check_image_size.py to check the dimension
 export CG_CROP_X=352 # has to be divisible by 2^5 = 32
 export CG_CROP_Y=352 # has to be divisible by 2^5 = 32
-export CG_CROP_Z=256
+export CG_CROP_Z=256 # has to be divisible by 2^5 = 32
 
 # define whether we are going to use pre-adapted image (turn it on to facilitate the training)
 export CG_ADAPTED_ALREADY=1
@@ -20,13 +20,14 @@ export CG_ADAPTED_ALREADY=1
 export CG_PATIENTS_IN_ONE_BATCH=2  # set it to be larger will slow down the training speed.
 # n should be divisible by CG_CROP_Z
 # batch_size = N * n
-export CG_BATCH_SIZE=32 # N = 2, n = 16
+export CG_BATCH_SIZE=32 # N = 2 patients in one batch, n = 16 slices from each patient
+
 
 # set the number of classes in the output
 export CG_NUM_CLASSES=4 #10 for Left-sided, 14 for Right-sided, 2 for LV only, 3 for LV+LA, 4 for LV+LA+LVOT (need relabel LVOT in the code)
 export CG_RELABEL_LVOT=1
 
-# set U-NET feature depth
+# set U-NET feature depth (no need to change)
 export CG_CONV_DEPTH_MULTIPLIER=1 # default = 1 
 export CG_FEATURE_DEPTH=8 # 8 is up to 2^8 = 256, 9 is up to 512 and 10 is up to 1024, 2D-Unet should use 10
 
@@ -48,29 +49,14 @@ export CG_NORMALIZE=0 #default = 0
 
 
 
-# folders for VR dataset
-export CG_MAIN_DATA_DIR="/Data/McVeighLabSuper/wip/zhennong/"
-export CG_IMAGE_DATA_DIR="${CG_MAIN_DATA_DIR}nii-images/"
-export CG_SEG_DATA_DIR="${CG_MAIN_DATA_DIR}predicted_seg/"
-export CG_SPREADSHEET_DIR="${CG_MAIN_DATA_DIR}spreadsheets/"
-export CG_PARTITION_DIR="${CG_MAIN_DATA_DIR}partition/"
-export CG_OCTOMORE_DIR="/Data/local_storage/Zhennong/VR_Data_0.625/"
-export CG_FCNAS_DIR="/Data/ContijochLab/workspaces/zhennong/Volume_Rendering/"
+# folders for Zhennong's dataset
+export CG_MAIN_DATA_DIR="/Data/McVeighLabSuper/wip/zhennong/"   # main folder in NAS
+export CG_IMAGE_DATA_DIR="${CG_MAIN_DATA_DIR}nii-images/"       # folder in NAS to save all nii images (raw image, resampled image, adapted image)
+export CG_SEG_DATA_DIR="${CG_MAIN_DATA_DIR}predicted_seg/"      # folder in NAS to save all segmentations (manual ones, predicted ones)
+export CG_SPREADSHEET_DIR="${CG_MAIN_DATA_DIR}spreadsheets/"    # folder in NAS to save all spreadsheets
+export CG_PARTITION_DIR="${CG_MAIN_DATA_DIR}partition/"         # folder in NAS to save partition files
+export CG_OCTOMORE_DIR="/Data/local_storage/Zhennong/VR_Data_0.625/"   # folder in octomore local_storage to save all image files
+export CG_FCNAS_DIR="/Data/ContijochLab/workspaces/zhennong/Volume_Rendering_segmentation/"  # folder in NAS (francisco's NAS) to save all files for AI model weights
 
-
-
-
-
-# ## folders for Davis's dataset
-# export CG_RAW_DIR="/Data/McVeighLabSuper/projects/Zhennong/AI/AI_datasets/"
-# export CG_BASE_DIR="/Data/McVeighLabSuper/projects/Zhennong/AI/CNN/" 
-# #export CG_OCTOMORE_DIR="/Experiment/Documents/Data"
-# export CG_OCTOMORE_DIR="/Data/local_storage/Zhennong/Data"
-# #export CG_OCTOMORE_DIR="/home/cnn/Documents/Data/"
-# export CG_FCNAS_DIR="/Data/ContijochLab/workspaces/zhennong/AI_plane_seg/"
-# #####
-# export CG_INPUT_DIR="${CG_BASE_DIR}all-classes-all-phases-${CG_SPACING}/"
-# export CG_DERIVED_DIR="${CG_BASE_DIR}all-classes-all-phases-data-${CG_SPACING}/"
-# export CG_LOCAL_DIR="${CG_OCTOMORE_DIR}_${CG_SPACING}/"
 
 

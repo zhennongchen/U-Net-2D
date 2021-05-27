@@ -23,6 +23,7 @@ class Experiment():
   
     # Number of Classes (Including Background)
     self.num_classes = int(os.environ['CG_NUM_CLASSES'])
+
     # Whether relabel of LVOT is necessary
     if int(os.environ['CG_RELABEL_LVOT']) == 1:
       self.relabel_LVOT = True

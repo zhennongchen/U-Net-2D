@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+## This script calculates the DICE in validaiton
+# you may need to write your own version
+
 import dvpy as dv
 import dvpy.tf
 import segcnn

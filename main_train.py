@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 # in terminal, type ./main_train.py --batch No. to run
+# ./main_train.py --batch 0 means you pick the first group as the validation 
+# ./main_train.py --batch means you don't define a batch (or you define it as None), and then the model will train and validate on all cases.
 
 # System
 import argparse
@@ -45,19 +47,20 @@ def train(batch):
     print(cg.dim)
     print('BATCH_SIZE = ',cg.batch_size)
     
-    # define test_set
-    test_set = 'lead_1tf_4class'
+    # define a name of your trial
+    test_set = 'VR_1tf_4classes' 
 
     # define partition file
-    partition_file_name = 'one_time_frame_4classes_lead_cases'
+    partition_file_name = 'one_time_frame_4classes'
 
-    # define hdf5 file save folder
+    # define hdf5 file save folder (hdf5 file is the model weights file)
     print(cg.fc_dir)
     weight_file_save_folder = os.path.join(cg.fc_dir,'models')
 
     #===========================================
     dv.section_print('Calculating Image Lists...')
-
+    
+    # obtain image list and segmentation list in training and validation
     imgs_list_trn=[np.load(os.path.join(cg.partition_dir,partition_file_name,'img_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
     segs_list_trn=[np.load(os.path.join(cg.partition_dir,partition_file_name,'seg_list_'+str(p)+'.npy'),allow_pickle = True) for p in range(cg.num_partitions)]
    
@@ -86,8 +89,7 @@ def train(batch):
                                    )(model_inputs[0])
     model_outputs += [unet_output]
 
-  
-    
+
     model = Model(inputs = model_inputs,outputs = model_outputs)
     opt = Adam(lr = 1e-4) 
     losses={'unet':'categorical_crossentropy'} 
@@ -98,9 +100,10 @@ def train(batch):
     #======================
     dv.section_print('Fitting model...')
    
+    # define the name of each model weight file
     if batch is None:
-      model_name = 'model-'+test_set+'_batchall_s'
-      model_fld = 'model_batchall'
+      model_name = 'model-'+test_set+'_batch_all_s'
+      model_fld = 'model_batch_all'
     else:
       model_name = 'model-'+test_set+'_batch'+str(batch)+'_s'
       model_fld = 'model_batch'+str(batch)
@@ -109,13 +112,13 @@ def train(batch):
     os.makedirs(os.path.dirname(filepath), exist_ok = True)  
   
     # set callbacks
-    csv_logger = CSVLogger(os.path.join(cg.fc_dir, 'logs',  model_name + '_training-log' + '.csv'))
+    csv_logger = CSVLogger(os.path.join(cg.fc_dir, 'logs',  model_name + '_training-log' + '.csv')) # log will automatically record the train_accuracy/loss and validation_accuracy/loss in each epoch
     callbacks = [csv_logger,
                  ModelCheckpoint(filepath,          
                                  monitor='val_loss',
-                                 save_best_only=False,
+                                 save_best_only=False, # set True then only save model weight file when "monitor" (Define as val_loss here) gets improved, set False then save every epoch no matter whether the result improves
                                  ),
-                 LearningRateScheduler(dv.learning_rate_step_decay2),   
+                 LearningRateScheduler(dv.learning_rate_step_decay2),   # learning decay
                 ]
    
 
@@ -133,16 +136,16 @@ def train(batch):
       slice_num = cg.slice_num,
       batch_size = cg.batch_size,
       patients_in_one_batch = cg.patients_in_one_batch,
-      relabel_LVOT = cg.relabel_LVOT,
+      relabel_LVOT = cg.relabel_LVOT, # remove it for RV
       shuffle = True,
       input_adapter = ut.in_adapt,
       output_adapter = ut.out_adapt,
       shape = cg.dim,
       input_channels = 1,
       output_channels = cg.num_classes,
-      augment = True,
+      augment = True, # only True in the training process to randomly translate, rotate and scale the image.
       normalize = cg.normalize,
-      adapted_already = cg.adapted_already,
+      adapted_already = cg.adapted_already, # True when you already did the image adaption in the pre-processing step.
       )
 
     valgen = dv.tf_2d.ImageDataGenerator(
@@ -155,7 +158,7 @@ def train(batch):
       segs_list_tst,
       slice_num = cg.slice_num,
       batch_size = cg.batch_size,
-      patients_in_one_batch = 1,#cg.patients_in_one_batch,
+      patients_in_one_batch = 1, # set as 1 in validation
       relabel_LVOT = cg.relabel_LVOT,
       shuffle = True,
       input_adapter = ut.in_adapt,
