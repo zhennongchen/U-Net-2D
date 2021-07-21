@@ -21,25 +21,39 @@ cg = segcnn.Experiment()
 # folders = ff.find_all_target_files(['*/*/img-nii-1.5'],cg.local_dir)
 # print(folders.shape)
 
-# file transfer
-# save_folder = os.path.join('/Data/McVeighLabSuper/wip/zhennong/','upsample-nii-images')
+# file transfer intra-NAS
+# save_folder = os.path.join('/Data/McVeighLabSuper/wip/zhennong/2020_after_Junes','downsample-nii-images-1.5mm')
 # patient = ff.find_all_target_files(['Abnormal/*','Normal/*'],cg.image_data_dir)
 # for p in patient:
 #     patient_class = os.path.basename(os.path.dirname(p))
 #     patient_id = os.path.basename(p)
     
 
-#     image_files = ff.find_all_target_files(['*.nii.gz'],os.path.join(p,'img-nii-0.625'))
+#     image_files = ff.find_all_target_files(['0.nii.gz'],os.path.join(p,'img-nii-1.5'))
 #     for img in image_files:
-#         destination = os.path.join(save_folder,patient_class,patient_id,'img-nii-0.625',os.path.basename(img))
+#         destination = os.path.join(save_folder,patient_class,patient_id,'img-nii-1.5',os.path.basename(img))
         
 #         ff.make_folder([os.path.dirname(os.path.dirname(destination)),os.path.dirname(destination)])
 #         if os.path.isfile(destination) == 0:
 #             print(patient_class,patient_id)
 #             shutil.copy(img,destination)
 
-
+# file transfer into octomore
+save_folder = cg.local_dir
+patient = ff.find_all_target_files(['Abnormal/*','Normal/*'],cg.image_data_dir)
+for p in patient:
+    patient_class = os.path.basename(os.path.dirname(p))
+    patient_id = os.path.basename(p)
     
+
+    image_files = ff.find_all_target_files(['*.nii.gz'],os.path.join(p,'img-nii-0.625'))
+    for img in image_files:
+        destination = os.path.join(save_folder,patient_class,patient_id,'img-nii-0.625',os.path.basename(img))
+        
+        ff.make_folder([os.path.dirname(os.path.dirname(destination)),os.path.dirname(destination)])
+        if os.path.isfile(destination) == 0:
+            print(patient_class,patient_id)
+            shutil.copy(img,destination)
 
 
 

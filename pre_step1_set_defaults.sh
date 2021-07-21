@@ -50,10 +50,10 @@ export CG_NORMALIZE=0 #default = 0
 
 
 # folders for Zhennong's dataset
-export CG_MAIN_DATA_DIR="/Data/McVeighLabSuper/wip/zhennong/"   # main folder in NAS
+export CG_MAIN_DATA_DIR="/Data/McVeighLabSuper/wip/zhennong/2020_after_Junes/"   # main folder in NAS
 export CG_IMAGE_DATA_DIR="${CG_MAIN_DATA_DIR}nii-images/"       # folder in NAS to save all nii images (raw image, resampled image, adapted image)
 export CG_SEG_DATA_DIR="${CG_MAIN_DATA_DIR}predicted_seg/"      # folder in NAS to save all segmentations (manual ones, predicted ones)
-export CG_SPREADSHEET_DIR="${CG_MAIN_DATA_DIR}spreadsheets/"    # folder in NAS to save all spreadsheets
+export CG_SPREADSHEET_DIR="/Data/McVeighLabSuper/wip/zhennong/spreadsheets/"    # folder in NAS to save all spreadsheets
 export CG_PARTITION_DIR="${CG_MAIN_DATA_DIR}partition/"         # folder in NAS to save partition files
 export CG_OCTOMORE_DIR="/Data/local_storage/Zhennong/VR_Data_0.625/"   # folder in octomore local_storage to save all image files
 export CG_FCNAS_DIR="/Data/ContijochLab/workspaces/zhennong/Volume_Rendering_segmentation/"  # folder in NAS (francisco's NAS) to save all files for AI model weights

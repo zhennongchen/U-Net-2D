@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# this script can check the dimension of each case so that 
-# we can set a reasonable cropping/padding size
 
 import os
 import numpy as np

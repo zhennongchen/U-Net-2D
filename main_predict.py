@@ -82,7 +82,7 @@ valgen = dv.tf_2d.ImageDataGenerator(
 #===========================================
 dv.section_print('Get patient list...')
 ### Define the patient list you will predict on (MAY NEED TO write your own version)
-patient_list = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Final_patient_list_include.csv'))
+patient_list = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Final_patient_list_2020_after_Junes.csv'))
 print(len(patient_list))
 # patient_list = []
 # for p in patient_list:
@@ -106,7 +106,8 @@ for p in patient_list:
   l = ff.sort_timeframe(ff.find_all_target_files(['img-nii-0.625/*.nii.gz'],os.path.join(cg.image_data_dir,patient_class,patient_id)),2)
   time_frame_list = []
   for ll in l:
-    time_frame_list.append(ff.find_timeframe(l[-1],2)+1)
+    time_frame_list.append(ff.find_timeframe(ll,2))
+  print(time_frame_list)
  
   # define whether you have picked particular time frame(s) in the model training
   # for these time frames you don't need to make the prediction
@@ -129,9 +130,15 @@ for p in patient_list:
   # Prediction
   for t in time_frame_list:
     img = os.path.join(cg.local_dir,patient_class,patient_id,'img-nii-0.625',str(t)+'.nii.gz')
+    assert os.path.isfile(img) == 1
     #seg = os.path.join(cg.local_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch','pred_s_'+str(t_picked)+'.nii.gz')
     
-    if t != t_picked:
+    if os.path.isfile(os.path.join(cg.main_data_dir,'predicted_seg',patient_class,patient_id,'seg-pred-0.625-4classes',seg_filename + str(t) + '.nii.gz')) == 1:
+      print('already done')
+      continue
+
+    #if t != t_picked:
+    if 1 == 1:
       # define predict generator
       u_pred = model.predict_generator(valgen.predict_flow(np.asarray([img]),
                                                         slice_num = cg.slice_num,
@@ -160,10 +167,11 @@ for p in patient_list:
       nb.save(u_pred, save_file)
 
 
-    else: # already have manual segmentation in this time frame, only need to copy into new folder
-      assert t == t_picked
-      seg = os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch','pred_s_'+str(t_picked)+'.nii.gz')
-      shutil.copy(seg,os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-4classes',seg_filename + str(t_picked) + '.nii.gz'))
+
+    #else: # already have manual segmentation in this time frame, only need to copy into new folder
+      #assert t == t_picked
+      #seg = os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch','pred_s_'+str(t_picked)+'.nii.gz')
+      #shutil.copy(seg,os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-4classes',seg_filename + str(t_picked) + '.nii.gz'))
  
 
  
