@@ -39,21 +39,21 @@ cg = segcnn.Experiment()
 #             shutil.copy(img,destination)
 
 # file transfer into octomore
-save_folder = cg.local_dir
-patient = ff.find_all_target_files(['Abnormal/*','Normal/*'],cg.image_data_dir)
-for p in patient:
-    patient_class = os.path.basename(os.path.dirname(p))
-    patient_id = os.path.basename(p)
+# save_folder = cg.local_dir
+# patient = ff.find_all_target_files(['Abnormal/*','Normal/*'],cg.image_data_dir)
+# for p in patient:
+#     patient_class = os.path.basename(os.path.dirname(p))
+#     patient_id = os.path.basename(p)
     
 
-    image_files = ff.find_all_target_files(['*.nii.gz'],os.path.join(p,'img-nii-0.625'))
-    for img in image_files:
-        destination = os.path.join(save_folder,patient_class,patient_id,'img-nii-0.625',os.path.basename(img))
+#     image_files = ff.find_all_target_files(['*.nii.gz'],os.path.join(p,'img-nii-0.625'))
+#     for img in image_files:
+#         destination = os.path.join(save_folder,patient_class,patient_id,'img-nii-0.625',os.path.basename(img))
         
-        ff.make_folder([os.path.dirname(os.path.dirname(destination)),os.path.dirname(destination)])
-        if os.path.isfile(destination) == 0:
-            print(patient_class,patient_id)
-            shutil.copy(img,destination)
+#         ff.make_folder([os.path.dirname(os.path.dirname(destination)),os.path.dirname(destination)])
+#         if os.path.isfile(destination) == 0:
+#             print(patient_class,patient_id)
+#             shutil.copy(img,destination)
 
 
 
@@ -90,4 +90,24 @@ for p in patient:
 #     shutil.make_archive(os.path.join(cg.seg_data_dir,p[0],p[1],'seg-nii-1.5-upsample-retouch-adapted'),'zip',f2)
 #     shutil.rmtree(f1)
 #     shutil.rmtree(f2)
+
+# change file name
+patient_list = ff.find_all_target_files(['*/*'],cg.image_data_dir)
+
+for p in patient_list:
+    files = ff.find_all_target_files(['img-nii/img_*.nii.gz'],p)
+    print(p,len(files))
+
+    if len(files) == 0:
+        print('no data. skip')
+    else:
+        for f in files:
+            tf = ff.find_timeframe(f,2,'_')
+            if os.path.isfile(os.path.join(p,'img-nii',str(tf)+'.nii.gz')) == 0:
+                shutil.copy(f,os.path.join(p,'img-nii',str(tf)+'.nii.gz'))
+        
+        for f in files:
+            os.remove(f)
+    
+
   

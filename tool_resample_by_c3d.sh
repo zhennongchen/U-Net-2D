@@ -8,8 +8,8 @@ minus=1
 . defaults.sh
 
 # Get a list of patients.
-patients=(/Data/McVeighLabSuper/projects/Zhennong/AI/AI_datasets/*/*)
-save_folder="/Data/McVeighLabSuper/projects/Zhennong/AI/CNN/all-classes-all-phases-0.625/"
+patients=(/Data/McVeighLabSuper/wip/Ashish_ResyncCT/nii-images/*/*)
+save_folder="/Data/McVeighLabSuper/wip/Ashish_ResyncCT/nii-images/"
 img_or_seg=1 # 1 is image, 0 is seg
 
 if ((${img_or_seg} == 1))
@@ -48,10 +48,10 @@ do
   mkdir -p ${o_dir}
 
   # read the es.txt file
-  es_file=$(<${p}/es.txt)
+  # es_file=$(<${p}/es.txt)
 
-  IMGS=(${p}/${img_folder}/0.nii.gz)
-  IMGS+=(${p}/${img_folder}/${es_file}.nii.gz)
+  IMGS=(${p}/${img_folder}/*.nii.gz)
+  #IMGS+=(${p}/${img_folder}/${es_file}.nii.gz)
 
 
   for i in $(seq 0 $(( ${#IMGS[*]} - 1 )));
