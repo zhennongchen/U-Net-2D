@@ -82,8 +82,9 @@ valgen = dv.tf_2d.ImageDataGenerator(
 #===========================================
 dv.section_print('Get patient list...')
 ### Define the patient list you will predict on (MAY NEED TO write your own version)
-patient_list = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Final_patient_list_2020_after_Junes.csv'))
-print(len(patient_list))
+# patient_list = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Final_patient_list_2020_after_Junes.csv'))
+# print(len(patient_list))
+patient_list = ff.find_all_target_files(['*/*'],cg.image_data_dir)
 # patient_list = []
 # for p in patient_list:
 #   batch = ff.locate_batch_num_for_patient(p[0],p[1],os.path.join(cg.partition_dir,'partitions_lead_cases_local_adapted.npy'))
@@ -96,8 +97,10 @@ print(len(patient_list))
 dv.section_print('Prediction...')
 count = 0
 for p in patient_list:
-  patient_class = p[0]
-  patient_id = p[1]
+  # patient_class = p[0]
+  # patient_id = p[1]
+  patient_class = os.path.basename(os.path.dirname(p))
+  patient_id = os.path.basename(p)
   print(patient_class,patient_id)
 
   #############You can add a "continue" statement in the loop for cases you already done ###########
@@ -125,7 +128,7 @@ for p in patient_list:
     t_picked = 10000 # arbitray large number 
 
 
-  ff.make_folder([os.path.join(cg.seg_data_dir,patient_class,patient_id)])
+  ff.make_folder([os.path.join(cg.seg_data_dir,patient_class), os.path.join(cg.seg_data_dir,patient_class,patient_id)])
 
   # Prediction
   for t in time_frame_list:
