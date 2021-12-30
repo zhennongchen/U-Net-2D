@@ -5,32 +5,45 @@ close all;
 clear all;
 addpath(genpath('/Users/zhennongchen/Documents/GitHub/Volume_Rendering_by_DL/matlab/'));
 %% Find patient list
-patient_list = Find_all_folders('/Volumes/Seagate_5T/2020_CT_data/predicted_seg/Abnormal/');
+patient_list = Find_all_folders('/Volumes/Seagate_5T/Ashish_ResyncCT/predicted_seg/');
+
 class_list = []; id_list = [];
 for i = 1:size(patient_list,1)
-    class = split(patient_list(i).folder,'/');
-    class = class(end); class = class{1};
-    class_list = [class_list;convertCharsToStrings(class)];
-    id_list = [id_list;convertCharsToStrings(patient_list(i).name)];
+    a = Find_all_folders([patient_list(i).folder,'/',patient_list(i).name]);
+    for ii = 1:size(a,1)
+        class = split(a(ii).folder,'/');
+        class = class(end); class = class{1};
+        class_list = [class_list;convertCharsToStrings(class)];
+        id_list = [id_list;convertCharsToStrings(a(ii).name)];
+    end
+   
 end
-patient_list = Find_all_folders('/Volumes/Seagate_5T/2020_CT_data/predicted_seg/Normal/');
-for i = 1:size(patient_list,1)
-    class = split(patient_list(i).folder,'/');
-    class = class(end); class = class{1};
-    class_list = [class_list;convertCharsToStrings(class)];
-    id_list = [id_list;convertCharsToStrings(patient_list(i).name)];
-end
+% %%
+% class_list = []; id_list = [];
+% for i = 1:size(patient_list,1)
+%     class = split(patient_list(i).folder,'/');
+%     class = class(end); class = class{1};
+%     class_list = [class_list;convertCharsToStrings(class)];
+%     id_list = [id_list;convertCharsToStrings(patient_list(i).name)];
+% end
+% patient_list = Find_all_folders('/Volumes/Seagate_5T/2020_CT_data/predicted_seg/Normal/');
+% for i = 1:size(patient_list,1)
+%     class = split(patient_list(i).folder,'/');
+%     class = class(end); class = class{1};
+%     class_list = [class_list;convertCharsToStrings(class)];
+%     id_list = [id_list;convertCharsToStrings(patient_list(i).name)];
+% end
 %% Do pixel clearning:
-main_folder = '/Volumes/Seagate_5T/2020_CT_data/predicted_seg/';
+main_folder = '/Volumes/Seagate_5T/Ashish_ResyncCT/predicted_seg/';
 
 % Global_disconnect_cases = [];
 % LA_disconnect_cases = [];
 % LVOT_disconnect_cases = [];
-for i = 31%1:size(id_list,1)
+for i = 1:size(id_list,1)
     patient_class = convertStringsToChars(class_list(i,:));
     patient_id = convertStringsToChars(id_list(i));
     disp(patient_id)
-    patient_folder = [main_folder,patient_class,'/',patient_id,'/seg-pred-0.625-4classes/'];
+    patient_folder = [main_folder,patient_class,'/',patient_id,'/seg-pred-0.625-4classes-raw/'];
     
     if isfolder(patient_folder) == 1
         

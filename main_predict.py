@@ -132,11 +132,11 @@ for p in patient_list:
 
   # Prediction
   for t in time_frame_list:
-    img = os.path.join(cg.local_dir,patient_class,patient_id,'img-nii-0.625',str(t)+'.nii.gz')
+    img = os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625',str(t)+'.nii.gz')
     assert os.path.isfile(img) == 1
     #seg = os.path.join(cg.local_dir,patient_class,patient_id,'seg-pred-1.5-upsample-retouch','pred_s_'+str(t_picked)+'.nii.gz')
     
-    if os.path.isfile(os.path.join(cg.main_data_dir,'predicted_seg',patient_class,patient_id,'seg-pred-0.625-4classes',seg_filename + str(t) + '.nii.gz')) == 1:
+    if os.path.isfile(os.path.join(cg.main_data_dir,'predicted_seg',patient_class,patient_id,'seg-pred-0.625-4classes-raw',seg_filename + str(t) + '.nii.gz')) == 1:
       print('already done')
       continue
 
@@ -159,13 +159,13 @@ for p in patient_list:
                                                         steps = 1,)
 
       # save u_net segmentation
-      u_gt_nii = nb.load(os.path.join(cg.local_dir,patient_class,patient_id,'img-nii-0.625',str(t)+'.nii.gz')) # load image for affine matrix
+      u_gt_nii = nb.load(os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625',str(t)+'.nii.gz')) # load image for affine matrix
       u_pred = np.rollaxis(u_pred, 0, 3)
       u_pred = np.argmax(u_pred , axis = -1).astype(np.uint8)
       u_pred = dv.crop_or_pad(u_pred, u_gt_nii.get_fdata().shape)
       u_pred[u_pred == 3] = 4  # particular for LVOT
       u_pred = nb.Nifti1Image(u_pred, u_gt_nii.affine)
-      save_file = os.path.join(cg.main_data_dir,'predicted_seg',patient_class,patient_id,'seg-pred-0.625-4classes',seg_filename + str(t) + '.nii.gz')#predicted segmentation
+      save_file = os.path.join(cg.main_data_dir,'predicted_seg',patient_class,patient_id,'seg-pred-0.625-4classes-raw',seg_filename + str(t) + '.nii.gz')#predicted segmentation
       os.makedirs(os.path.dirname(save_file), exist_ok = True)
       nb.save(u_pred, save_file)
 
