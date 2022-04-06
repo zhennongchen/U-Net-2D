@@ -8,22 +8,29 @@ minus=1
 # . defaults.sh
 
 # Get a list of patients.
-patients=(/Data/McVeighLabSuper/wip/Ashish_ResyncCT/nii-images/*/*)
-save_folder="/Data/McVeighLabSuper/wip/Ashish_ResyncCT/nii-images/"
-img_or_seg=1 # 1 is image, 0 is seg
+patients=(/Data/McVeighLab/wip/zhennong/predicted_planes/*/*/)
+data_folder="/Data/McVeighLab/wip/zhennong/2020_after_Junes/predicted_seg/"
+save_folder="/Data/McVeighLab/wip/zhennong/2020_after_Junes/predicted_seg/"
+img_or_seg=0 # 1 is image, 0 is seg
 
 if ((${img_or_seg} == 1))
 then
 img_folder="img-nii"
 else
-img_folder="seg-nii"
+img_folder="seg-pred-0.625-4classes-connected-retouch"
 fi
 
 for p in ${patients[*]};
 do
 
 # Print the current patient.
+  # find out patientclass and patientid
+  patient_id=$(basename ${p})
+  patient_class=$(basename $(dirname ${p}))
+
+  p=${data_folder}${patient_class}/${patient_id}
   echo ${p} 
+
   
   # assert whether dcm image exists
   if ! [ -d ${p}/${img_folder} ] || ! [ "$(ls -A  ${p}/${img_folder})" ];then
@@ -31,9 +38,7 @@ do
     continue
   fi
 
-  # find out patientclass and patientid
-  patient_id=$(basename ${p})
-  patient_class=$(basename $(dirname ${p}))
+  
 
   # set output folder
   
@@ -41,7 +46,7 @@ do
   then
   o_dir=${save_folder}${patient_class}/${patient_id}/img-nii-1.5
   else
-  o_dir=${save_folder}${patient_class}/${patient_id}/seg-nii-0.625
+  o_dir=${save_folder}${patient_class}/${patient_id}/seg-nii-0.625-4classes-connected-retouch-1.5
   fi
 
   echo ${o_dir}
@@ -68,7 +73,7 @@ do
       then
         c3d ${i_file} -interpolation Cubic -resample-mm 1.5x1.5x1.5mm -o ${o_file}
       else
-        c3d ${i_file} -interpolation NearestNeighbor -resample-mm 0.625mmx0.625mmx0.625mm -o ${o_file}
+        c3d ${i_file} -interpolation NearestNeighbor -resample-mm 1.5mmx1.5mmx1.5mm -o ${o_file}
       fi
     fi   
   done

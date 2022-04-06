@@ -71,6 +71,7 @@ model_outputs += [unet_output]
 model = Model(inputs = model_inputs,outputs = model_outputs)
     
 # Load weights
+print(model_files[0])
 model.load_weights(model_files[0],by_name = True)
 # build generator
 valgen = dv.tf_2d.ImageDataGenerator(
@@ -85,6 +86,7 @@ dv.section_print('Get patient list...')
 # patient_list = ff.get_patient_list_from_csv(os.path.join(cg.spreadsheet_dir,'Final_patient_list_2020_after_Junes.csv'))
 # print(len(patient_list))
 patient_list = ff.find_all_target_files(['*/*'],cg.image_data_dir)
+print(patient_list)
 # patient_list = []
 # for p in patient_list:
 #   batch = ff.locate_batch_num_for_patient(p[0],p[1],os.path.join(cg.partition_dir,'partitions_lead_cases_local_adapted.npy'))
@@ -166,8 +168,8 @@ for p in patient_list:
       u_pred[u_pred == 3] = 4  # particular for LVOT
       u_pred = nb.Nifti1Image(u_pred, u_gt_nii.affine)
       save_file = os.path.join(cg.main_data_dir,'predicted_seg',patient_class,patient_id,'seg-pred-0.625-4classes-raw',seg_filename + str(t) + '.nii.gz')#predicted segmentation
-      os.makedirs(os.path.dirname(save_file), exist_ok = True)
-      nb.save(u_pred, save_file)
+      # os.makedirs(os.path.dirname(save_file), exist_ok = True)
+      # nb.save(u_pred, save_file)
 
 
 
